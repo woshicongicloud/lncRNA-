@@ -1,0 +1,9 @@
+#!/bin/bash
+for i in {48..62};
+do    
+    prefetch SRR35899${i}
+done
+#下载数据的过程无非是根据GEO找到FTP的地址，然后用wget或者prefetch下载而已。在我们今后的生涯里必然会遇到很多次类似的情况，所以写个脚本吧。
+#脚本逻辑很简单：
+#根据GEO accession找到FTP地址
+#用wget循环下载FTP地址下的数据
