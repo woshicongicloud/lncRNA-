@@ -7,3 +7,24 @@ done
 #脚本逻辑很简单：
 #根据GEO accession找到FTP地址
 #用wget循环下载FTP地址下的数据
+for i in `seq 56 62`
+do 
+    fastq-dump --gzip --split-3 -O ./fastq/ -A SRR35899${i}.sra
+done
+#以上命令在vim中编辑，保存为.sh文件后，通过bash运行，注意seq前的撇不是单引号
+ls ./*fastq.gz | xargs -i echo fastqc -o ./fastqc_result --nogroup {} \& > fastqc.sh
+
+进入转换后fastq.gz文件所在的文件中，用以下命令生成批量运行的脚本
+
+在已经安装Anaconda的情况下，安装MultiQC非常简单，只要运行如下命令即可
+
+conda install -c bioconda multiqc   # install multiqc
+数据库整理
+ftp://ftp.ncbi.nlm.nih.gov/genomes/genbank/plant 存有所有植物的基因组数据，包括不同版本的基因组
+使用hisat 比对
+
+extract_exons.py TAIR10_GFF3_genes.gff.gtf > tair10_gene_TE.exon
+extract_splice_sites.py TAIR10_GFF3_genes.gff.gtf > tair10_gene_TE.ss
+hisat2-build -p 4 tair10.Chr.fa --ss tair10_gene_TE.ss --exon tair10_gene_TE.exon tair10.Chr_tran
+
+hisat2的运行例子：比如： hisat2 -p 4 -S Col1.sam -x ../genome/tair10.Chr_tran -U Col-1_ATCACG_L001_R1_001_trimmed.fq.gz 2> Col1.err
